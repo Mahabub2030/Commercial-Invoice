@@ -59,6 +59,45 @@
             margin: 5px;
             cursor: pointer;
         }
+        #uploadedPdfContainer {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .pdf-item {
+            display: flex;
+            align-items: center;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .pdf-item button {
+            margin-left: 10px;
+        }
+        .comment-section {
+            margin-top: 20px;
+        }
+        .comment-section input {
+            width: calc(100% - 140px);
+            padding: 10px;
+            margin-right: 10px;
+        }
+        .comment-section button {
+            padding: 10px 20px;
+            margin-right: 10px;
+        }
+        .comments {
+            margin-top: 10px;
+        }
+        .comment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .comment-item button {
+            margin-left: 10px;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
@@ -129,49 +168,22 @@
             </tbody>
             <tfoot>
                 <tr class="total-row">
-                    <td colspan="6">Subtotal (AL Yesen Agriculter)</td>
-                    <td id="subtotal">0.00</td>
-                    <td colspan="5"></td>
+                    <td colspan="6">Subtotal</td>
+                    <td colspan="2" id="subtotal">0.00</td>
+                    <td colspan="2" id="subtotal2">0.00</td>
+                    <td colspan="2" id="subtotal3">0.00</td>
                 </tr>
                 <tr class="total-row">
                     <td colspan="6">VAT (15%)</td>
-                    <td id="vat">0.00</td>
-                    <td colspan="5"></td>
+                    <td colspan="2" id="vat">0.00</td>
+                    <td colspan="2" id="vat2">0.00</td>
+                    <td colspan="2" id="vat3">0.00</td>
                 </tr>
                 <tr class="total-row">
                     <td colspan="6">Total (with VAT)</td>
-                    <td id="total">0.00</td>
-                    <td colspan="5"></td>
-                </tr>
-                <tr class="total-row">
-                    <td colspan="6">Subtotal (Al Taleb Group)</td>
-                    <td id="subtotal2">0.00</td>
-                    <td colspan="5"></td>
-                </tr>
-                <tr class="total-row">
-                    <td colspan="6">VAT (15%)</td>
-                    <td id="vat2">0.00</td>
-                    <td colspan="5"></td>
-                </tr>
-                <tr class="total-row">
-                    <td colspan="6">Total (with VAT, Al Taleb Group)</td>
-                    <td id="total2">0.00</td>
-                    <td colspan="5"></td>
-                </tr>
-                <tr class="total-row">
-                    <td colspan="6">Subtotal (Alam Albild)</td>
-                    <td id="subtotal3">0.00</td>
-                    <td colspan="5"></td>
-                </tr>
-                <tr class="total-row">
-                    <td colspan="6">VAT (15%)</td>
-                    <td id="vat3">0.00</td>
-                    <td colspan="5"></td>
-                </tr>
-                <tr class="total-row">
-                    <td colspan="6">Total (with VAT, Alam Albild)</td>
-                    <td id="total3">0.00</td>
-                    <td colspan="5"></td>
+                    <td colspan="2" id="total">0.00</td>
+                    <td colspan="2" id="total2">0.00</td>
+                    <td colspan="2" id="total3">0.00</td>
                 </tr>
             </tfoot>
         </table>
@@ -181,6 +193,16 @@
             <button onclick="removeAllRows()">Remove All Rows</button>
             <button onclick="downloadExcel()">Download as Excel</button>
             <button onclick="downloadPDF()">Download as PDF</button>
+            <input type="file" id="uploadPdfInput" accept="application/pdf" onchange="uploadPDF(event)" style="display:none;" multiple>
+            <button onclick="document.getElementById('uploadPdfInput').click()">Upload PDF</button>
+        </div>
+        <div id="uploadedPdfContainer"></div>
+
+        <div class="comment-section">
+            <input type="text" id="commentInput" placeholder="Enter your comment">
+            <button onclick="submitComment()">Submit</button>
+            <button onclick="clearComment()">Clear</button>
+            <div class="comments" id="comments"></div>
         </div>
     </div>
     
@@ -226,107 +248,213 @@
             const vatRate = 0.15; // VAT rate for AL Yesen Agriculter
             const vatRate2 = 0.15; // VAT rate for Al Taleb Group
             const vatRate3 = 0.15; // VAT rate for Alam Albild
-            
-            document.querySelectorAll('tbody tr').forEach(row => {
+            document.querySelectorAll('#comparisonTable tbody tr').forEach(row => {
                 const qty = parseFloat(row.cells[4].innerText) || 0;
                 const unitPrice = parseFloat(row.cells[5].innerText) || 0;
-                const totalPrice = qty * unitPrice;
-                row.cells[6].innerText = totalPrice.toFixed(2);
-                subtotal += totalPrice;
-
-                // Calculate totals for Al Taleb Group
                 const unitPrice2 = parseFloat(row.cells[7].innerText) || 0;
-                const totalPrice2 = qty * unitPrice2;
-                row.cells[8].innerText = totalPrice2.toFixed(2); // Display total price for Al Taleb Group
-                subtotal2 += totalPrice2;
-
-                // Calculate totals for Alam Albild
                 const unitPrice3 = parseFloat(row.cells[9].innerText) || 0;
+                const totalPrice = qty * unitPrice;
+                const totalPrice2 = qty * unitPrice2;
                 const totalPrice3 = qty * unitPrice3;
-                row.cells[10].innerText = totalPrice3.toFixed(2); // Display total price for Alam Albild
+                row.cells[6].innerText = totalPrice.toFixed(2);
+                row.cells[8].innerText = totalPrice2.toFixed(2);
+                row.cells[10].innerText = totalPrice3.toFixed(2);
+                subtotal += totalPrice;
+                subtotal2 += totalPrice2;
                 subtotal3 += totalPrice3;
             });
-
-            document.getElementById('subtotal').innerText = subtotal.toFixed(2);
             const vat = subtotal * vatRate;
-            document.getElementById('vat').innerText = vat.toFixed(2);
             const total = subtotal + vat;
-            document.getElementById('total').innerText = total.toFixed(2);
-
-            // Display subtotal and total for Al Taleb Group
-            document.getElementById('subtotal2').innerText = subtotal2.toFixed(2);
             const vat2 = subtotal2 * vatRate2;
-            document.getElementById('vat2').innerText = vat2.toFixed(2);
             const total2 = subtotal2 + vat2;
-            document.getElementById('total2').innerText = total2.toFixed(2);
-
-            // Display subtotal and total for Alam Albild
-            document.getElementById('subtotal3').innerText = subtotal3.toFixed(2);
             const vat3 = subtotal3 * vatRate3;
-            document.getElementById('vat3').innerText = vat3.toFixed(2);
             const total3 = subtotal3 + vat3;
+            document.getElementById('subtotal').innerText = subtotal.toFixed(2);
+            document.getElementById('vat').innerText = vat.toFixed(2);
+            document.getElementById('total').innerText = total.toFixed(2);
+            document.getElementById('subtotal2').innerText = subtotal2.toFixed(2);
+            document.getElementById('vat2').innerText = vat2.toFixed(2);
+            document.getElementById('total2').innerText = total2.toFixed(2);
+            document.getElementById('subtotal3').innerText = subtotal3.toFixed(2);
+            document.getElementById('vat3').innerText = vat3.toFixed(2);
             document.getElementById('total3').innerText = total3.toFixed(2);
-            
-            // Save table state to local storage
-            saveTableState();
         }
 
         function addRow() {
-            const table = document.getElementById('comparisonTable').getElementsByTagName('tbody')[0];
-            const newRow = table.insertRow();
-            const columns = ['Items', 'Services No', 'Description', 'Unit', 'Qty', 'Unit Price', 'Total Price', 'Unit Price', 'Total Price', 'Unit Price', 'Total Price', 'Actions'];
-
-            columns.forEach((col, index) => {
-                const newCell = newRow.insertCell(index);
-                if (col === 'Total Price' && (index === 6 || index === 8 || index === 10)) {
+            const tableBody = document.querySelector('#comparisonTable tbody');
+            const newRow = tableBody.insertRow();
+            for (let i = 0; i < 12; i++) {
+                const newCell = newRow.insertCell(i);
+                if (i !== 11) newCell.contentEditable = true;
+                if (i === 0) newCell.innerText = tableBody.rows.length; // Serial number
+                if (i === 6 || i === 8 || i === 10) {
                     newCell.classList.add('total-price');
-                    newCell.innerText = '0.00';
-                } else if (col === 'Actions') {
-                    newCell.innerHTML = '<button onclick="removeRow(this)">Remove</button>';
-                } else {
-                    newCell.contentEditable = true;
                 }
-            });
-
-            calculateTotals();
+                if (i === 11) {
+                    newCell.innerHTML = '<button onclick="removeRow(this)">Remove</button>';
+                }
+            }
+            saveTableState();
         }
 
         function removeRow(button) {
             const row = button.parentNode.parentNode;
             row.parentNode.removeChild(row);
+            saveTableState();
             calculateTotals();
         }
 
         function removeAllRows() {
-            const tbody = document.querySelector('#comparisonTable tbody');
-            tbody.innerHTML = '';
+            const tableBody = document.querySelector('#comparisonTable tbody');
+            tableBody.innerHTML = '';
+            saveTableState();
             calculateTotals();
         }
 
         function downloadExcel() {
             const table = document.getElementById('comparisonTable');
-            const wb = XLSX.utils.table_to_book(table, {sheet: "Sheet JS"});
-            XLSX.writeFile(wb, 'invoice_comparison.xlsx');
+            const workbook = XLSX.utils.table_to_book(table);
+            XLSX.writeFile(workbook, 'invoice_comparison.xlsx');
         }
 
         function downloadPDF() {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF('landscape', 'mm', 'a3');
             doc.autoTable({ html: '#comparisonTable' });
             doc.save('invoice_comparison.pdf');
         }
 
-        // Load table state and calculate totals on page load
-        document.addEventListener('DOMContentLoaded', () => {
+        function uploadPDF(event) {
+            const files = event.target.files;
+            const container = document.getElementById('uploadedPdfContainer');
+            const uploadedPdfs = JSON.parse(localStorage.getItem('uploadedPdfs')) || [];
+
+            for (const file of files) {
+                const item = document.createElement('div');
+                item.className = 'pdf-item';
+                item.innerText = file.name;
+                const removeButton = document.createElement('button');
+                removeButton.innerText = 'Remove';
+                removeButton.onclick = function() {
+                    item.remove();
+                    saveUploadedPdfs();
+                };
+                item.appendChild(removeButton);
+                container.appendChild(item);
+                uploadedPdfs.push(file.name);
+            }
+
+            localStorage.setItem('uploadedPdfs', JSON.stringify(uploadedPdfs));
+        }
+
+        function saveUploadedPdfs() {
+            const uploadedPdfs = [];
+            document.querySelectorAll('.pdf-item').forEach(item => {
+                uploadedPdfs.push(item.innerText);
+            });
+            localStorage.setItem('uploadedPdfs', JSON.stringify(uploadedPdfs));
+        }
+
+        function loadUploadedPdfs() {
+            const uploadedPdfs = JSON.parse(localStorage.getItem('uploadedPdfs')) || [];
+            const container = document.getElementById('uploadedPdfContainer');
+            container.innerHTML = '';
+
+            uploadedPdfs.forEach(pdfName => {
+                const item = document.createElement('div');
+                item.className = 'pdf-item';
+                item.innerText = pdfName;
+                const removeButton = document.createElement('button');
+                removeButton.innerText = 'Remove';
+                removeButton.onclick = function() {
+                    item.remove();
+                    saveUploadedPdfs();
+                };
+                item.appendChild(removeButton);
+                container.appendChild(item);
+            });
+        }
+
+        function submitComment() {
+            const commentInput = document.getElementById('commentInput');
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                const commentsDiv = document.getElementById('comments');
+                const commentItem = document.createElement('div');
+                commentItem.className = 'comment-item';
+                commentItem.innerText = commentText;
+                const editButton = document.createElement('button');
+                editButton.innerText = 'Edit';
+                editButton.onclick = function() {
+                    const newComment = prompt('Edit your comment:', commentItem.innerText);
+                    if (newComment) {
+                        commentItem.childNodes[0].nodeValue = newComment;
+                        saveComments();
+                    }
+                };
+                const removeButton = document.createElement('button');
+                removeButton.innerText = 'Remove';
+                removeButton.onclick = function() {
+                    commentItem.remove();
+                    saveComments();
+                };
+                commentItem.appendChild(editButton);
+                commentItem.appendChild(removeButton);
+                commentsDiv.appendChild(commentItem);
+                commentInput.value = '';
+                saveComments();
+            }
+        }
+
+        function saveComments() {
+            const comments = [];
+            document.querySelectorAll('.comment-item').forEach(item => {
+                comments.push(item.childNodes[0].nodeValue);
+            });
+            localStorage.setItem('comments', JSON.stringify(comments));
+        }
+
+        function loadComments() {
+            const comments = JSON.parse(localStorage.getItem('comments')) || [];
+            const commentsDiv = document.getElementById('comments');
+            commentsDiv.innerHTML = '';
+
+            comments.forEach(commentText => {
+                const commentItem = document.createElement('div');
+                commentItem.className = 'comment-item';
+                commentItem.innerText = commentText;
+                const editButton = document.createElement('button');
+                editButton.innerText = 'Edit';
+                editButton.onclick = function() {
+                    const newComment = prompt('Edit your comment:', commentItem.innerText);
+                    if (newComment) {
+                        commentItem.childNodes[0].nodeValue = newComment;
+                        saveComments();
+                    }
+                };
+                const removeButton = document.createElement('button');
+                removeButton.innerText = 'Remove';
+                removeButton.onclick = function() {
+                    commentItem.remove();
+                    saveComments();
+                };
+                commentItem.appendChild(editButton);
+                commentItem.appendChild(removeButton);
+                commentsDiv.appendChild(commentItem);
+            });
+        }
+
+        document.addEventListener('input', () => {
+            calculateTotals();
+            saveTableState();
+        });
+
+        window.onload = function() {
             loadTableState();
             calculateTotals();
-        });
-        
-        // Recalculate totals on content edit
-        document.querySelectorAll('#comparisonTable tbody').forEach(tbody => {
-            tbody.addEventListener('input', calculateTotals);
-        });
+            loadUploadedPdfs();
+            loadComments();
+        }
     </script>
-
 </body>
 </html>
