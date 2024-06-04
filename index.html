@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Commercial Invoice Comparison</title>
+    <title>Dammam airport Company (DACO Supply Chain Dep. Commercial Comparison)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,83 +12,102 @@
             padding: 0;
             background-color: #f8f9fa;
         }
+
         .container {
             width: 80%;
             margin: auto;
             background-color: #fff;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
         }
-        .company-details, .customer-details {
-            width: 45%;
-        }
+
         h1 {
             margin-top: 0;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-        table, th, td {
+
+        table,
+        th,
+        td {
             border: 1px solid black;
         }
-        th, td {
+
+        th,
+        td {
             padding: 8px;
             text-align: left;
         }
+
         .header {
             background-color: #f2f2f2;
         }
+
         .header-1 {
             column-span: 5;
         }
+
         .total-row {
             font-weight: bold;
         }
+
         .buttons {
             text-align: right;
             margin-bottom: 20px;
         }
+
         .buttons button {
             padding: 10px 20px;
             margin: 5px;
             cursor: pointer;
         }
+
         #uploadedPdfContainer {
             display: flex;
             flex-wrap: wrap;
             margin-top: 20px;
         }
+
         .pdf-item {
             display: flex;
             align-items: center;
             margin-right: 10px;
             margin-bottom: 10px;
         }
+
         .pdf-item button {
             margin-left: 10px;
         }
+
         .comment-section {
             margin-top: 20px;
         }
+
         .comment-section input {
             width: calc(100% - 140px);
             padding: 10px;
             margin-right: 10px;
         }
+
         .comment-section button {
             padding: 10px 20px;
             margin-right: 10px;
         }
+
         .comments {
             margin-top: 10px;
         }
+
         .comment-item {
             display: flex;
             justify-content: space-between;
@@ -95,6 +115,7 @@
             padding: 5px;
             border-bottom: 1px solid #ddd;
         }
+
         .comment-item button {
             margin-left: 10px;
         }
@@ -103,32 +124,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
 </head>
+
 <body>
 
     <div class="container">
         <header>
             <div class="company-details">
-                <h1>Commercial Comparison</h1>
+                <h1>Dammam airport Company(DACO)</h1>
                 <p>Supply Chain Dep.</p>
                 <p>Commercial Comparison</p>
-                <p>City, State, ZIP Code</p>
-                <p>Email: company@example.com</p>
-                <p>Phone: (123) 456-7890</p>
             </div>
-            <div class="customer-details">
-                <h1>Invoice Comparison</h1>
-            </div>
+
         </header>
 
         <!-- Table for Invoice Comparison -->
-        
+
         <table id="comparisonTable">
             <thead>
                 <tr class="header-1">
                     <th colspan="5"></th>
-                    <th colspan="2">AL Yesen Agriculter</th>
+                    <th colspan="2">AL Yaseen Agricultar</th>
                     <th colspan="2">Al Taleb Group</th>
-                    <th colspan="2">Alam Albild</th>
+                    <th colspan="2">Alam Albiad</th>
                     <th></th>
                 </tr>
             </thead>
@@ -152,8 +169,22 @@
                 <!-- Sample data rows -->
                 <tr>
                     <td contenteditable="true">1</td>
-                    <td contenteditable="true">68040l434707</td>
-                    <td contenteditable="true">Cobra insecticable</td>
+                    <td>
+                        <select>
+                            <option value="6840L434707">6840L434707</option>
+                            <option value="6840L434707">6840L434706</option>
+                            <option value="6840L434707">6840L434708</option>
+                            <option value="6840L434707">6840L434709</option>
+                        </select>
+                    </td>
+                    <td>
+                       <select>
+                        <option value="COBRA INSECTICIDE">COBRA INSECTICIDE</option>
+                        <option value="COBRA INSECTICIDE">COBRA INSECTICIDE</option>
+                        <option value="COBRA INSECTICIDE">COBRA INSECTICIDE</option>
+                        <option value="COBRA INSECTICIDE">COBRA INSECTICIDE</option>
+                       </select>
+                    </td>
                     <td contenteditable="true">IT</td>
                     <td contenteditable="true">10</td>
                     <td contenteditable="true">100</td>
@@ -193,7 +224,8 @@
             <button onclick="removeAllRows()">Remove All Rows</button>
             <button onclick="downloadExcel()">Download as Excel</button>
             <button onclick="downloadPDF()">Download as PDF</button>
-            <input type="file" id="uploadPdfInput" accept="application/pdf" onchange="uploadPDF(event)" style="display:none;" multiple>
+            <input type="file" id="uploadPdfInput" accept="application/pdf" onchange="uploadPDF(event)"
+                style="display:none;" multiple>
             <button onclick="document.getElementById('uploadPdfInput').click()">Upload PDF</button>
         </div>
         <div id="uploadedPdfContainer"></div>
@@ -205,7 +237,7 @@
             <div class="comments" id="comments"></div>
         </div>
     </div>
-    
+
     <script>
         function saveTableState() {
             const tableData = [];
@@ -335,7 +367,7 @@
                 item.innerText = file.name;
                 const removeButton = document.createElement('button');
                 removeButton.innerText = 'Remove';
-                removeButton.onclick = function() {
+                removeButton.onclick = function () {
                     item.remove();
                     saveUploadedPdfs();
                 };
@@ -366,7 +398,7 @@
                 item.innerText = pdfName;
                 const removeButton = document.createElement('button');
                 removeButton.innerText = 'Remove';
-                removeButton.onclick = function() {
+                removeButton.onclick = function () {
                     item.remove();
                     saveUploadedPdfs();
                 };
@@ -385,7 +417,7 @@
                 commentItem.innerText = commentText;
                 const editButton = document.createElement('button');
                 editButton.innerText = 'Edit';
-                editButton.onclick = function() {
+                editButton.onclick = function () {
                     const newComment = prompt('Edit your comment:', commentItem.innerText);
                     if (newComment) {
                         commentItem.childNodes[0].nodeValue = newComment;
@@ -394,7 +426,7 @@
                 };
                 const removeButton = document.createElement('button');
                 removeButton.innerText = 'Remove';
-                removeButton.onclick = function() {
+                removeButton.onclick = function () {
                     commentItem.remove();
                     saveComments();
                 };
@@ -425,7 +457,7 @@
                 commentItem.innerText = commentText;
                 const editButton = document.createElement('button');
                 editButton.innerText = 'Edit';
-                editButton.onclick = function() {
+                editButton.onclick = function () {
                     const newComment = prompt('Edit your comment:', commentItem.innerText);
                     if (newComment) {
                         commentItem.childNodes[0].nodeValue = newComment;
@@ -434,7 +466,7 @@
                 };
                 const removeButton = document.createElement('button');
                 removeButton.innerText = 'Remove';
-                removeButton.onclick = function() {
+                removeButton.onclick = function () {
                     commentItem.remove();
                     saveComments();
                 };
@@ -449,7 +481,7 @@
             saveTableState();
         });
 
-        window.onload = function() {
+        window.onload = function () {
             loadTableState();
             calculateTotals();
             loadUploadedPdfs();
@@ -457,4 +489,5 @@
         }
     </script>
 </body>
+
 </html>
